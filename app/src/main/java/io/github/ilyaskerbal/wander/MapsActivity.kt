@@ -52,6 +52,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         map.addMarker(MarkerOptions().position(homeLatLng).title("My Home"))
 
         setMapLongClick(map)
+        setPoiClick(map)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -80,10 +81,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         else -> super.onOptionsItemSelected(item)
     }
 
-    private fun setMapLongClick(gMap: GoogleMap){
-        map.setOnMapLongClickListener { latlng ->
+    private fun setMapLongClick(gMap: GoogleMap) {
+        gMap.setOnMapLongClickListener { latlng ->
             val snipet = String.format(Locale.getDefault(), "Lat: %1$.5f, Long: %2$.5f", latlng.latitude, latlng.longitude)
             gMap.addMarker(MarkerOptions().position(latlng).title(getString(R.string.dropped_pin)).snippet(snipet))
+        }
+    }
+
+    private fun setPoiClick(gMap: GoogleMap) {
+        gMap.setOnPoiClickListener { poi ->
+            val poiMarker = gMap.addMarker(MarkerOptions().position(poi.latLng).title(poi.name))
+            poiMarker?.showInfoWindow()
         }
     }
 }
