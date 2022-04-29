@@ -2,6 +2,7 @@ package io.github.ilyaskerbal.wander
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 
@@ -10,6 +11,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import io.github.ilyaskerbal.wander.databinding.ActivityMapsBinding
 import java.util.*
@@ -18,6 +20,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var map: GoogleMap
     private lateinit var binding: ActivityMapsBinding
+    private val TAG = MapsActivity::class.java.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +56,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         setMapLongClick(map)
         setPoiClick(map)
+        setMapStyle(map)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -92,6 +96,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         gMap.setOnPoiClickListener { poi ->
             val poiMarker = gMap.addMarker(MarkerOptions().position(poi.latLng).title(poi.name))
             poiMarker?.showInfoWindow()
+        }
+    }
+
+    private fun setMapStyle(gMap: GoogleMap) {
+        try {
+            val success = gMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style))
+            if (!success) Log.e(TAG, "Unable to apply the style: Parsing failed.")
+        } catch (e: Exception) {
+            Log.e(TAG, "Cannot load file: ${e.message}")
         }
     }
 }
