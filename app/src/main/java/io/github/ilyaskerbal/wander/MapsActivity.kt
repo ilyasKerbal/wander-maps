@@ -10,10 +10,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MapStyleOptions
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import io.github.ilyaskerbal.wander.databinding.ActivityMapsBinding
 import java.util.*
 
@@ -50,6 +47,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val latitude = 35.77420452645121
         val longitude = -5.786890552811697
         val zoomLevel = 14f
+        val overlaySize : Float = 100f
 
         val homeLatLng = LatLng(latitude, longitude)
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(homeLatLng, zoomLevel))
@@ -58,6 +56,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         setMapLongClick(map)
         setPoiClick(map)
         setMapStyle(map)
+        setGroundOverlay(map, homeLatLng, overlaySize)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -110,5 +109,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         } catch (e: Exception) {
             Log.e(TAG, "Cannot load file: ${e.message}")
         }
+    }
+
+    private fun setGroundOverlay(gMap: GoogleMap, homeLatLng: LatLng, overlaySize: Float = 100f) {
+        val androidOverlay = GroundOverlayOptions()
+            .image(BitmapDescriptorFactory.fromResource(R.drawable.tanger))
+            .position(homeLatLng, overlaySize)
+        gMap.addGroundOverlay(androidOverlay)
     }
 }
